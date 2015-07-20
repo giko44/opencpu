@@ -18,6 +18,7 @@ httpget_object <- local({
       "csv" = httpget_object_csv(object, objectname),
       "file" = httpget_object_file(object),
       "json" = httpget_object_json(object),
+      "jsonf" = httpget_object_jsonf(object),
       "rda" = httpget_object_rda(object, objectname),
       "rds" = httpget_object_rds(object, objectname),
       "pb" = httpget_object_pb(object, objectname),
@@ -84,6 +85,16 @@ httpget_object <- local({
     res$setheader("Content-Type", "application/json");
     res$finish();
   }
+  httpget_object_jsonf <- function(object){
+      jsonstring <- do.call(function(pretty=TRUE, ...){
+      toJSON(x=object, pretty=pretty, force=T,dataframe="values", ...);
+      #toJSON(list(names=names(x),data=x),dataframe="values")
+        
+      }, req$get());
+        res$setbody(jsonstring);
+        res$setheader("Content-Type", "application/json");
+        res$finish();
+      }  
 
   httpget_object_print <- function(object){
     outtext <- capture.output(do.call(printwithmax, c(req$get(), list(x=object))));

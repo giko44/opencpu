@@ -32,16 +32,20 @@ session <- local({
   #evaluates something inside a session
   eval <- function(input, args, storeval=FALSE, format="list"){
 
-    #create a temporary dir
-    execdir <- tempfile("ocpu_session_");
-    stopifnot(dir.create(execdir));
-    setwd(execdir);
-
-    #copy files to execdir
-    lapply(req$files(), function(x){
-      stopifnot(file.copy(x$tmp_name, basename(x$name)))
-    });
-
+  RPC = format %in% c("json","jsonf", "print", "pb","console")
+    
+    if (!RPC) {
+      #create a temporary dir
+      execdir <- tempfile("ocpu_session_");
+      stopifnot(dir.create(execdir));
+      setwd(execdir);
+  
+      #copy files to execdir
+      lapply(req$files(), function(x){
+        stopifnot(file.copy(x$tmp_name, basename(x$name)))
+      });
+    }
+    
     #setup handler
     myhandler <- evaluate::new_output_handler(value=function(myval, visible=TRUE){
       if(isTRUE(storeval)){
@@ -73,11 +77,12 @@ session <- local({
     #need to do this before evaluate, in case evaluate uses set.seed
     hash <- generate();
 
-    #setup some prelim
-    pdf(tempfile(), width=11.69, height=8.27, paper="A4r")
-    dev.control(displaylist="enable");
-    par("bg" = "white");
-
+    if (!RPC) {
+      #setup some prelim
+      pdf(tempfile(), width=11.69, height=8.27, paper="A4r")
+      dev.control(displaylist="enable");
+      par("bg" = "white");
+    }
     #Prevent assignments to .globalEnv
     #Maybe enable this in a later version
     #lockEnvironment(globalenv())
@@ -94,42 +99,43 @@ session <- local({
     } else {
       output <- evaluate::evaluate(input=input, envir=sessionenv, stop_on_error=2, new_device=FALSE, output_handler=myhandler);
     }
-    dev.off()
+    if (!RPC) {
+        dev.off()
+  
+        #in case code changed dir
+        setwd(execdir)
+  
+        #unload session namespaces, otherwise sessionInfo() crashes
+        unload_session_namespaces()
+    
+        #temp fix for evaluate bug
+        #output <- Filter(function(x){!emptyplot(x)}, output);
 
-    #in case code changed dir
-    setwd(execdir)
-
-    #unload session namespaces, otherwise sessionInfo() crashes
-    unload_session_namespaces()
-
-    #temp fix for evaluate bug
-    #output <- Filter(function(x){!emptyplot(x)}, output);
-
-    #store output
-    save(file=".RData", envir=sessionenv, list=ls(sessionenv, all.names=TRUE), compress=FALSE);
-    saveRDS(output, file=".REval", compress=FALSE);
-    saveRDS(sessionInfo(), file=".RInfo", compress=FALSE);
-    saveRDS(.libPaths(), file=".Rlibs", compress=FALSE);
-    saveDESCRIPTION(hash)
-
-    #does not work on windows
-    #stopifnot(file.rename(execdir, sessiondir(hash)));
-
-    #store results permanently
-    outputdir <- sessiondir(hash);
-
-    #First try renaming to destionation directory
-    if(!isTRUE(file.rename(execdir, outputdir))){
-      #When rename fails, try copying instead
-      suppressWarnings(dir.create(dirname(outputdir)));
-      stopifnot(file.copy(execdir, dirname(outputdir), recursive=TRUE));
-      setwd(dirname(outputdir));
-      stopifnot(file.rename(basename(execdir), basename(outputdir)));
-      unlink(execdir, recursive=TRUE);
+        #store output
+        save(file=".RData", envir=sessionenv, list=ls(sessionenv, all.names=TRUE), compress=FALSE);
+        saveRDS(output, file=".REval", compress=FALSE);
+        saveRDS(sessionInfo(), file=".RInfo", compress=FALSE);
+        saveRDS(.libPaths(), file=".Rlibs", compress=FALSE);
+        saveDESCRIPTION(hash)
+    
+        #does not work on windows
+        #stopifnot(file.rename(execdir, sessiondir(hash)));
+    
+        #store results permanently
+        outputdir <- sessiondir(hash);
+    
+        #First try renaming to destionation directory
+        if(!isTRUE(file.rename(execdir, outputdir))){
+          #When rename fails, try copying instead
+          suppressWarnings(dir.create(dirname(outputdir)));
+          stopifnot(file.copy(execdir, dirname(outputdir), recursive=TRUE));
+          setwd(dirname(outputdir));
+          stopifnot(file.rename(basename(execdir), basename(outputdir)));
+          unlink(execdir, recursive=TRUE);
+        }
     }
-
     #Shortcuts to get object immediately
-    if(format %in% c("json", "print", "pb")){
+    if(format %in% c("json","jsonf", "print", "pb")){
       sendobject(hash, get(".val", sessionenv), format);
     } else if(format %in% c("console")) {
       sendobject(hash, extract(output, format), "text");
