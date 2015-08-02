@@ -86,8 +86,8 @@ httpget_object <- local({
     res$finish();
   }
   httpget_object_jsonf <- function(object){
-      jsonstring <- do.call(function(pretty=TRUE, ...){
-      toJSON(x=object, pretty=pretty, force=T,dataframe="values", ...);
+      jsonstring <- do.call(function(pretty=FALSE, ...){
+      toJSON(x=object, pretty=pretty, force=T,dataframe="values");
       #toJSON(list(names=names(x),data=x),dataframe="values")
         
       }, req$get());

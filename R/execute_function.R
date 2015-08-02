@@ -6,7 +6,7 @@ execute_function <- function(object, requri, objectname="FUN"){
   }   
   
   #build the function call
-  fnargs <- req$post();
+  fnargs <- req$get();
   dotargs <- parse_dots(fnargs[["..."]]);
   fnargs["..."] <- NULL;
   

@@ -64,7 +64,7 @@ opencpu <- local({
     ));
   }
 
-  start <- function(port, rootpath = "/ocpu"){
+  start <- function(port=8081, rootpath = "/ocpu"){
     #make sure rootpath starts with a slash and no trailing slash
     rootpath <- sub("^//", "/", paste0("/", rootpath));
     rootpath <- sub("/$", "", rootpath);
@@ -122,6 +122,7 @@ opencpu <- local({
     iswaiting = FALSE;
     #try 10 times max
     #total time is (GET-timeout + 0.5) * 10
+    Sys.sleep(5);
     for(i in 1:10){
       tryCatch({
         stop_for_status(GET(paste0(uvurl, "/test/")));
@@ -130,7 +131,7 @@ opencpu <- local({
         if(i == 3){
           message("Waiting for server to respond...");
         }
-        Sys.sleep(0.5);
+        Sys.sleep(2);
       });
     }
     message("Server unresponsive; restarting.")

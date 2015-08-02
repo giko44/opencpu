@@ -36,7 +36,8 @@ httpget_package_r <- function(pkgpath, requri){
     
     #return object
     switch(req$method(),
-      "GET" = httpget_object(myobject, reqformat, reqobject),
+      #"GETX" = httpget_object(myobject, reqformat, reqobject),
+      "GET" = execute_function(myobject, tail(requri, -1), reqobject),
       "POST" = execute_function(myobject, tail(requri, -1), reqobject),
       stop("invalid method")
     );
