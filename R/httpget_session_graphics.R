@@ -48,13 +48,13 @@ httpget_session_graphics <- function(filepath, requri){
   
   #get the plot
   index <- as.numeric(reqplot);
-  if(is.na(index)){
+  if(!length(index) || is.na(index)){
     stop("Plot must either be numeric value or 'last'");
   }
   
   #check out of bounds
-  if(index > length(myplots)){
-    res$notfound(message = "Graphic not found (out of bounds)")  
+  if(index < 1 || index > length(myplots)){
+    res$notfound(message = sprintf("Graphic not found (trying to select %d of %d graphics)", index, length(myplots)))  
   }
   
   myobject <- myplots[[index]];
@@ -64,6 +64,6 @@ httpget_session_graphics <- function(filepath, requri){
     res$redirectpath("/png")
   }
   
-  newfilename <- paste(tail(strsplit(basename(filepath), "_", fixed=TRUE)[[1]], 1), reqplot, sep="_plot");
+  newfilename <- paste(utils::tail(strsplit(basename(filepath), "_", fixed=TRUE)[[1]], 1), reqplot, sep="_plot");
   httpget_object(myobject, reqformat, newfilename);
 }

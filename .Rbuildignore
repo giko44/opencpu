@@ -1,7 +1,8 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 README.md
-Makefile
 .travis.yml
 ^teststuff$
 LICENSE
+^appveyor\.yml$
+^examples$

@@ -1,36 +1,35 @@
 httpget <- function(){
-  
+
   #temporary fix for OPTIONS method support
   #should implement this per resource and send some text
   if(isTRUE(req$method() == "OPTIONS")){
-    res$setheader("Allow", "GET,HEAD,POST,OPTIONS");
-    res$sendtext("Nothing here yet...");
+    res$setheader("Access-Control-Allow-Methods", "POST, GET, HEAD, OPTIONS, DELETE");
+    res$sendtext("OPTIONS OK");
   }
-    
+
   #extract path
-  reqpath <- strsplit(substring(URLdecode(req$path_info()), 2),"/")[[1]];
-  
+  clean_path <- gsub("//", "/", req$path_info(), fixed = TRUE)
+  reqpath <- strsplit(substring(curl::curl_unescape(clean_path), 2),"/")[[1]];
+
   if(!length(reqpath)){
     res$checkmethod();
-    res$redirectpath("/test");    
+    res$redirectpath("/test");
   }
-  
-  reqhead <- head(reqpath, 1);
-  reqtail <- tail(reqpath, -1);
+
+  reqhead <- utils::head(reqpath, 1);
+  reqtail <- utils::tail(reqpath, -1);
 
   switch(reqhead,
     "library" = httpget_library(.libPaths(), reqtail),
-    "apps" = httpget_apps(config("appspaths"), reqtail),         
+    "lib" = httpget_library(.libPaths(), reqtail), # new alias for /library
     "tmp" = httpget_tmp(reqtail),
     "doc" = httpget_doc(reqtail),
     "user" = httpget_user(reqtail),
-    "gist" = httpget_gist(reqtail),
-    "github" = httpget_github(reqtail),     
-    "cran" = httpget_cran(reqtail),
-    "bioc" = httpget_bioc(reqtail), 
+    "github" = httpget_apps(reqtail),
+    "apps" = httpget_apps(reqtail), # new alias for /github
     "webhook" = httpget_webhook(),
-    "test" = httpget_static(),
+    "test" = httpget_testapp(reqtail),
     "info" = httpget_info(),
-    res$notfound(message=paste("Invalid top level api: /", reqhead, sep=""))         
+    res$notfound(message=paste("Invalid top level api: /", reqhead, sep=""))
   )
-}	
+}

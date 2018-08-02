@@ -1,41 +1,46 @@
 Package: opencpu
-Type: Package
-Title: A System for Embedded Scientific Computing and Reproducible Research with R
-Version: 1.5.0
-Date: 2015-05-15
-Author: Jeroen Ooms
-Maintainer: Jeroen Ooms <jeroen.ooms@stat.ucla.edu>
+Title: Producing and Reproducing Results
+Version: 2.0.8
+Authors@R: person("Jeroen", "Ooms", role = c("aut", "cre"), email = "jeroen@berkeley.edu",
+    comment = c(ORCID = "0000-0002-4035-0289"))
 License: Apache License 2.0
-URL: https://www.opencpu.org, http://arxiv.org/abs/1406.4806
-BugReports: https://github.com/jeroenooms/opencpu/issues
+Encoding: UTF-8
+URL: https://www.opencpu.org (website)
+    https://github.com/opencpu/opencpu#readme (devel)
+BugReports: https://github.com/opencpu/opencpu/issues
 Depends:
     R (>= 3.0.0)
 Imports:
-    parallel,
-    tools,
-    stats,
-    evaluate (>= 0.5.1),
+    evaluate (>= 0.10.1),
     httpuv (>= 1.3),
     knitr (>= 1.6),
-    jsonlite (>= 0.9.14),
-    devtools (>= 1.6.1),
-    httr (>= 0.3),
+    jsonlite (>= 1.4),
+    devtools (>= 1.12),
+    sys (>= 1.6),
+    webutils (>= 0.6),
+    curl (>= 2.6),
+    sendmailR,
+    rappdirs,
+    zip,
+    mime,
+    protolite,
     brew,
     openssl
 Suggests:
-    RAppArmor,
-    sendmailR,
-    RProtoBuf (>= 0.4.2),
-    pander
-SystemRequirements: latex, pandoc, apparmor
-VignetteBuilder: knitr
-Description: The OpenCPU system exposes an HTTP API for embedded scientific
-    computing with R. This provides scalable foundations for integrating R
-    based analysis and visualization modules into pipelines, web applications
-    or big data infrastructures. The OpenCPU server can run either as a
-    single-user development server within the interactive R session, or as a
-    high performance multi-user cloud server that builds on Linux, Nginx and
-    rApache. The current R package forms the core of the system. When loaded
-    in R, it automatically initiates the single-user server and displays the
-    web address in the console. Visit the OpenCPU website for detailed
-    information and documentation on the API.
+    unix (>= 1.3),
+    haven,
+    feather,
+    pander,
+    R.rsp
+SystemRequirements: pandoc, apparmor (optional)
+VignetteBuilder: knitr, R.rsp
+Description: A system for embedded scientific computing and reproducible research with R.
+    The OpenCPU server exposes a simple but powerful HTTP api for RPC and data interchange
+    with R. This provides a reliable and scalable foundation for statistical services or 
+    building R web applications. The OpenCPU server runs either as a single-user development
+    server within the interactive R session, or as a multi-user Linux stack based on Apache2. 
+    The entire system is fully open source and permissively licensed. The OpenCPU website
+    has detailed documentation and example apps.
+LazyData: yes
+RoxygenNote: 6.0.1.9000
+Roxygen: list(markdown = TRUE)

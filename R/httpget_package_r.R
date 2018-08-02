@@ -9,17 +9,13 @@ httpget_package_r <- function(pkgpath, requri){
     loadPackageFrom(reqpackage, reqlib);
     
     #reqhead is function/object name
-    reqobject <- head(requri, 1);
+    reqobject <- utils::head(requri, 1);
     reqformat <- requri[2];    
     
     if(!length(reqobject)){
       res$checkmethod();
       ns <- paste("package", reqpackage, sep=":")
       res$sendlist(ls(ns))
-      #HTML:
-      #indexdata <- data.frame(name = ls(ns), stringsAsFactors=FALSE)
-      #indexdata$size <- unname(vapply(indexdata$name, function(x){object.size(get(x, ns))}, numeric(1)))
-      #send_index(indexdata)
     }
     
     #Get object. Try package namespace first (won't work for lazy data)
@@ -36,9 +32,8 @@ httpget_package_r <- function(pkgpath, requri){
     
     #return object
     switch(req$method(),
-      #"GETX" = httpget_object(myobject, reqformat, reqobject),
-      "GET" = execute_function(myobject, tail(requri, -1), reqobject),
-      "POST" = execute_function(myobject, tail(requri, -1), reqobject),
+      "GET" = httpget_object(myobject, reqformat, reqobject),
+      "POST" = execute_function(myobject, utils::tail(requri, -1), reqobject),
       stop("invalid method")
     );
   });

@@ -31,10 +31,9 @@ httpget_user <- function(uri){
   }
   
   #remaining of the api
-  reqtail <- tail(uri, -2)
+  reqtail <- utils::tail(uri, -2)
   switch(what,
     "library" = httpget_user_library(username, reqtail),
-    "apps" = httpget_user_apps(username, reqtail),
      res$notfound(message=paste("invalid user api: ", what, sep=""))
   );  
 }

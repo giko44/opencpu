@@ -1,20 +1,60 @@
-OpenCPU
-=======
+# opencpu
 
-[![Build Status](https://travis-ci.org/jeroenooms/opencpu.png?branch=master)](https://travis-ci.org/jeroenooms/opencpu)
+##### *Producing and Reproducing Results*
 
-The OpenCPU framework exposes a web API interfacing R, Latex and Pandoc. This API is used for example to integrate statistical functionality into systems, share and execute scripts or reports on centralized servers, and build R based "apps". The OpenCPU server can run either as a single-user server inside the interactive R session (using httpuv), or as a cloud server that builds on Linux and rApache. The current R package forms the core of the framework. When loaded in R, it automatically initiates the single-user server and displays the web address in the console. For more information, visit the [OpenCPU website](http://www.opencpu.org).
+[![Build Status](https://travis-ci.org/opencpu/opencpu.svg?branch=master)](https://travis-ci.org/opencpu/opencpu)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/jeroen/opencpu?branch=master&svg=true)](https://ci.appveyor.com/project/jeroen/opencpu)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/opencpu)](http://cran.r-project.org/package=opencpu)
+[![CRAN RStudio mirror downloads](http://cranlogs.r-pkg.org/badges/opencpu)](http://cran.r-project.org/web/packages/opencpu/index.html)
+[![Github Stars](https://img.shields.io/github/stars/opencpu/opencpu.svg?style=social&label=Github)](https://github.com/opencpu/opencpu)
 
-Install Single User Server
---------------------------
+> A system for embedded scientific computing and reproducible research with R.
+  The OpenCPU server exposes a simple but powerful HTTP api for RPC and data interchange
+  with R. This provides a reliable and scalable foundation for statistical services or 
+  building R web applications. The OpenCPU server runs either as a single-user development
+  server within the interactive R session, or as a multi-user Linux stack based on Apache2. 
+  The entire system is fully open source and permissively licensed. The OpenCPU website
+  has detailed documentation and example apps.
 
-Latest stable version (recommended):
+## Documentation
 
-    install.packages("opencpu")
+ - Official [API documentation](https://www.opencpu.org/api.html)
+ - Paper: [Towards a Universal Interface for Scientific Computing through Separation of Concerns](http://arxiv.org/abs/1406.4806) 
+ - Example [apps](https://www.opencpu.org/apps.html)
+ - JavaScript client: [opencpu.js](https://github.com/opencpu/opencpu.js)
+ - Server manual: [PDF](http://opencpu.github.io/server-manual/opencpu-server.pdf)
 
-Bleeding edge from Github:
-  
-    #update existing packages first
-    library(devtools)
-    install_github("jeroenooms/opencpu")
+## Cloud Server
+
+To install the cloud server in Ubuntu 16.04
+
+```sh
+#requires Ubuntu 16.04 (Xenial)
+sudo add-apt-repository -y ppa:opencpu/opencpu-2.0
+sudo apt-get update 
+sudo apt-get upgrade
+
+#install opencpu server
+sudo apt-get install -y opencpu-server
+
+#optional
+sudo apt-get install -y rstudio-server 
+```
+
+See the opencpu [website](https://www.opencpu.org/download.html) for details how to install on other platforms.
+
+## Local Development server
+
+To start the single-user development server in R:
+
+```r
+library(opencpu)
+ocpu_start_server()
+```
+
+Or to start an App:
+
+```r
+ocpu_start_app("rwebapps/stockapp")
+```
 
