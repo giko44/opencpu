@@ -1,4 +1,7 @@
 httpget_testapp <- function(requri){
+  #check if API has been enabled
+  check.enabled("api.testapp");
+
   #only GET
   res$checkmethod()
 

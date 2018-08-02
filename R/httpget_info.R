@@ -1,4 +1,7 @@
 httpget_info <- function(requri){
+  #check if API has been enabled
+  check.enabled("api.info");
+
   #some diagnostics
   myobject <- structure(list(
     System = utils::sessionInfo(),

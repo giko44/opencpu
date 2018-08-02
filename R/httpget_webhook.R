@@ -1,4 +1,7 @@
 httpget_webhook <- function(){
+  #check if API has been enabled
+  check.enabled("api.webhook");
+
   if(req$method() == "GET"){
     res$sendtext(paste0(
       "To enable CI, add the following URL as a 'WebHook' in your Github repository:\n\n  ",

@@ -1,4 +1,7 @@
 httpget_doc <- function(requri){
+  #check if API has been enabled
+  check.enabled("api.doc");
+
   #set cache value as for libraries
   res$setcache("lib");
 
